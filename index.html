@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="KO" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>기억상자</title>
+    <link rel="stylesheet" href="./images/bootstrap.min.css">
+    <link rel="stylesheet" href="./images/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./images/style.css">
+    <script type="text/javascript" src="./images/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="./images/bootstrap.min.js"></script>
+  </head>
+  <style>
+   @font-face{
+    font-family: 'Glyphicons Halflings';
+    src: local('Glyphicons Halflings'),
+    url("./images/glyphicons-halflings-regular.woff2") format('woff2'),
+    url("./images/glyphicons-halflings-regular.woff") format('woff');
+   }
+  </style>
+
+  <script type="text/javascript">
+    // csv 파일 데이터 관련 변수 선언
+    let f_split = []
+    let ttl = null;
+    let head_li = [];
+    let con_li = [];
+
+    // 필터링 컬럼 존재 배열 선언
+    let ftr_obj1 = con_li;
+    let ftr_obj2 = [];
+    let ftr_obj3 = [];
+    let ftr_obj4 = [];
+    let ftr_objfn = [];
+    let ftr_objsv = [];
+
+    // 필터링 컬럼 삭제 배열 선언
+    let ftr_res1 = new Set();
+    let ftr_res2 = new Set();
+    let ftr_res3 = new Set();
+    let ftr_res4 = new Set();
+    let ftr_resfn = new Set();
+
+    // 싱글뷰, 홀뷰, 오토슬라이드 함수 관련 변수 선언
+    let ftr_idx = [];
+    let ftr_idx_num = 0;
+    let ftr_for_num = 0;
+    let timenum = 0;
+    let timelimit = [];
+    let timesum = 0;
+    let timeritv;
+    let html_frame = "html";
+    let html_method;
+    let act_pg = -1;
+    let all_page = 0;
+
+  </script>
+  <script type="text/javascript" src="./images/base.js"></script>
+  <script>
+    $(document).keydown((e) => { OperKey(e); });
+  </script>
+  <body>
+    <div class="container">
+      <header class="row">
+        <div class="col-lg-12">
+          <div class="row text-center">
+            <h2 id="title-part">
+              <img src="./images/brain_150.png" height="64px">&nbsp;
+              <span>기억상자</span>
+            </h2>
+            <br>
+            <br>
+          </div>
+        </div>
+      </header>
+      <!-- 전체 메뉴 영역 시작 -->
+      <div id="menu row">
+        <!-- 파일영역 시작 -->
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="exampleInputFile">업로드 하기</label>
+              <input type="file" id="data-csv" onchange="Dload()">
+              <p class="help-block">'파일 선택' 버튼을 눌러서 기억상자를 실행할 CSV 파일을 지정하세요.</p>
+            </div>
+          </div>
+        </div>
+        <!-- 파일영역 끝 -->
+        <!-- 옵션보기 메뉴 시작 -->
+        <div class="row">
+          <div class="text-right col-lg-12">
+            <button id="btn-opshow" class="btn btn-default hidden" onclick="OptionShow()">옵션 보기</button>
+            <button id="btn-ophide" class="btn btn-default hidden" onclick="OptionHide()">옵션 숨기기</button>
+            <br>
+            <br>
+          </div>
+        </div>
+        <!-- 옵션보기 메뉴 끝 -->
+        <!-- 옵션 메뉴 시작 -->
+        <div id="option-menu" class="hidden">
+          <!-- 파트 선택 메뉴 시작 -->
+          <div id="part-select" class="panel panel-default">
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h3>파트 선택</h3>
+                </div>
+                <div id="part-select1" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                  <h4>1차 분류</h4>
+                  <select id="clmenu-1" class="form-control" onchange="FtrList(1, ftr_obj1, ftr_obj2, ftr_res2)">
+                    <option></option>
+                  </select><br>
+                </div>
+                <div id="part-select2" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                  <h4>2차 분류</h4>
+                  <select id="clmenu-2" class="form-control" onchange="FtrList(2, ftr_obj2, ftr_obj3, ftr_res3)">
+                    <option></option>
+                  </select><br>
+                </div>
+                <div id="part-select3" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                  <h4>3차 분류</h4>
+                  <select id="clmenu-3" class="form-control" onchange="FtrList(3, ftr_obj3, ftr_obj4, ftr_res4)">
+                    <option></option>
+                  </select><br>
+                </div>
+                <div id="part-select4" class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                  <h4>4차 분류</h4>
+                  <select id="clmenu-4" class="form-control" onchange="FtrList(4, ftr_obj4, ftr_objfn, ftr_resfn)">
+                    <option></option>
+                  </select>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 파트 선택 메뉴 끝 -->
+          <!-- 네비 탭 시작-->
+          <br>
+          <ul class="nav nav-tabs">
+            <li id="wnav" role="presentation" class="active"><a href="#wnav" onclick="NavToggle('wnav','snav')">전체보기</a></li>
+            <li id="snav" role="presentation"><a href="#snav" onclick="NavToggle('snav','wnav')">하나씩 보기</a></li>
+          </ul>
+          <br>
+          <!-- 네비 탭 끝-->
+          <!-- 전체보기 패널 시작 -->
+          <div id="whole-panel" class="panel panel-default">
+            <div class="panel-body">
+              <div id="view-method-wh" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>보기방식</h4>
+                <select class="form-control">
+                  <option>개념우선(서술형)</option>
+                  <option>설명우선(단답형)</option>
+                </select>
+              </div>
+              <div id="level-wh" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h4>중요도</h4>
+                  </div>
+                  <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                    <select class="form-control">
+                      <option>선택없음</option>
+                    </select>
+                  </div>
+                  <div id="lvwh-Rdo" class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                    <div class="radio">
+                      <label class="radio-inline">
+                        <input type="radio" name="lvwhRdo" id="lvwh-Rdo1" value="include">이상
+                      </label>
+                      <label id="lvwh-Rdo" class="radio-inline">
+                        <input type="radio" name="lvwhRdo" id="lvwh-Rdo2" value="only">만
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>전체 행 수: </h4>
+                <input id="lines" type="number" class="form-control">
+                <br>
+              </div>
+              <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12 text-right">
+                <button class="btn btn-default" onclick="WholeView()">불러오기</button>
+              </div>
+              <br>
+            </div>
+          </div>
+          <!-- 전체보기 패널 끝 -->
+          <!-- 하나씩 보기 패널 시작 -->
+          <div id="single-panel" class="panel panel-default hidden">
+            <div class="panel-body">
+              <div id="sort-order" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>데이터 정렬순서</h4>
+                <select class="form-control">
+                  <option>순서대로</option>
+                  <option>역순으로</option>
+                  <option>랜덤</option>
+                </select>
+                <br>
+              </div>
+              <div id="view-method-sg" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>보기방식</h4>
+                <select class="form-control">
+                  <option>개념우선(서술형)</option>
+                  <option>설명우선(단답형)</option>
+                </select>
+                <br>
+              </div>
+              <div id="auto-man" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>자동여부</h4>
+                <select class="form-control">
+                  <option>자동</option>
+                  <option>수동</option>
+                </select>
+                <br>
+              </div>
+              <div id="time-set" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <h4>시간설정<span class="fs-14">(개념, 암기문, 머릿글자, 설명)</span></h4>
+                <input type="text" class="form-control">
+                <br>
+              </div>
+              <div id="level-sg" class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h4>중요도</h4>
+                  </div>
+                  <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                    <select class="form-control">
+                      <option>선택없음</option>
+                    </select>
+                  </div>
+                  <div id="lvsg-Rdo" class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                    <div class="radio">
+                      <label class="radio-inline">
+                        <input type="radio" name="lvsgRdo" id="lvsg-Rdo2" value="only"> 만
+                      </label>
+                      <label class="radio-inline">
+                        <input type="radio" name="lvsgRdo" id="lvsg-Rdo1" value="include"> 이상
+                      </label>
+                    </div>
+                  </div>
+                  </div>
+                <br>
+              </div>
+              <div class="col-lg-12 col-md-6 col-sm-6 col-xs-12 text-right">
+                <button class="btn btn-default" onclick="SingleView()">불러오기</button>
+                <button class="btn btn-default hidden" onclick="CancelView()">중지</button>
+              </div>
+              <br>
+            </div>
+          </div>
+          <!-- 하나씩 보기 끝 -->
+        </div>
+        <!-- 옵션 메뉴 끝 -->
+      </div>
+      <!-- 메뉴 영역 끝 -->
+      <!-- 본문 콘텐츠 영역 시작 -->
+      <section id ="cntsec" class="col-lg-12">
+        <br>
+        <!-- 전체 보기 테이블 로딩 영역 시작 -->
+        <div id="content-wh" class="hidden row">
+        </div>
+        <!-- 전체 보기 테이블 로딩 영역 끝 -->
+        <!-- 전체 보기 페이지 로딩 영역 시작 -->
+        <div id="page-wh" class="hidden row text-center">
+        </div>
+        <!-- 전체 보기 페이지 로딩 영역 끝 -->
+        <!-- 하나씩 보기 로딩 영역 시작 -->
+        <div id="content-sg" class="hidden row">
+        </div>
+        <!-- 하나씩 보기 로딩 영역 끝 -->
+      </section>
+      <div class="col-lg-12">
+        <div class="row">
+          <div height="100px"></div>
+        </div>
+      </div>
+      <!-- 본문 콘텐츠 영역 끝 -->
+
+    </div>
+  </body>
+</html>
