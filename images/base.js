@@ -29,7 +29,7 @@ function Dload(){
 
     // 데이터 제목 내용 HTML 상에 반영 & 타이틀 이미지 변경
     $("#title-part span").html(ttl);
-    $("#title-part img").attr("src" ,`.\\img\\light_150.png`);
+    $("#title-part img").attr("src" ,`./img/light_150.png`);
 
     // HTML 상에 1차 필터 메뉴 반영하기
     let ftr_con1 = '<option></option>\n<option>전체</option>\n<option>'
