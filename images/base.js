@@ -24,12 +24,12 @@ function Dload(){
     ftr_obj1 = con_li;
     ftr_res1.clear()
     for(con of con_li) {
-      ftr_res1.add(con[0]);
+      ftr_res1.add(con[1]);
     }
 
     // 데이터 제목 내용 HTML 상에 반영 & 타이틀 이미지 변경
     $("#title-part span").html(ttl);
-    $("#title-part img").attr("src" ,`./img/light_150.png`);
+    $("#title-part img").attr("src" ,`./images/light_150.png`);
 
     // HTML 상에 1차 필터 메뉴 반영하기
     let ftr_con1 = '<option></option>\n<option>전체</option>\n<option>'
@@ -49,7 +49,7 @@ function Dload(){
 
     // HTML 상의 중요도 필터에 리스트 반영하기
     let lv_li = [];
-    for (let con of con_li) { lv_li.push(con[8]); }
+    for (let con of con_li) { lv_li.push(con[9]); }
     lv_sort = lv_li.sort((a,b) => {
       if (a < b) { return -1 }
       else if (a > b) {return 1}
@@ -74,7 +74,7 @@ function FtrList(idx_num, obj_arr, obj_nxt, res_nxt) {
   let ftr;
   if (clfil != "전체"){
     ftr = obj_arr.filter((item, index, source)=>{
-      let result = (item[idx_num-1] == clfil);
+      let result = (item[idx_num] == clfil);
       return result;
     });
   } else {
@@ -83,7 +83,7 @@ function FtrList(idx_num, obj_arr, obj_nxt, res_nxt) {
 
   // 중요도(레벨) 변경시 리스트 백업
   if (idx_num == 4) {
-    ftr_objsv = ftr;
+    ftr_objsv = [...ftr];
   }
 
   // 다음 목록 배열 초기화
@@ -96,7 +96,7 @@ function FtrList(idx_num, obj_arr, obj_nxt, res_nxt) {
   for (let f of ftr) { obj_nxt.push(f); }
 
   // 컬럼 제거한 배열 다음 목록으로 내보내기
-  for (f of ftr) { res_nxt.add(f[idx_num]); }
+  for (let f of ftr) { res_nxt.add(f[idx_num+1]); }
 
   // 컬럼 제거한 다음 목록 HTML 화면에 반영하기
   for (let i=idx_num+1; i <= 4; i++) {
@@ -148,14 +148,23 @@ function JmpCon(index) {
   }
 }
 
+
 // 인덱스 점프 호출 버튼 함수
 function JmpBtn() {
   let index = $("#srch-input").val();
+  let idx_arr = [];
   index = Number(index);
-  if (ftr_idx.includes(index)){
+
+  for (let i = 0; i < ftr_obj1.length; i++) {
+    idx_arr.push(i);
+  }
+
+  if (idx_arr.includes(index-1)){
     ftr_for_num = 1;
     ftr_idx_num = 0;
-    JmpCon(index);
+    ftr_idx = idx_arr;
+    ftr_idx_num = index-1;
+    NxtCon(html_frame, html_method, 0);
   }
   else {
     alert("입력하신 숫자가 현재 데이터 인덱스 범위에 없습니다. 다시 입력하세요.")
@@ -190,24 +199,24 @@ function NxtCon(frame, method, fornum) {
     switch (ftr_for_num) {
       case 0:
         $("#content-sg").html(frame);
-        let clt_con = idx_ftr.slice(0,4).join("/")
-          + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${inum})</span>`;
+        let clt_con = idx_ftr.slice(1,5).join("/")
+          + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
         $("#cltype").html(clt_con);
-        $("#definy").html(idx_ftr[4]);
+        $("#definy").html(idx_ftr[5]);
         break;
 
       case 1:
-        $("#memorize").html(idx_ftr[5]);
+        $("#memorize").html(idx_ftr[6]);
         break;
 
       case 2:
-        $("#headstr").html(idx_ftr[6]);
+        $("#headstr").html(idx_ftr[7]);
         break;
 
       case 3:
-        $("#desc").html(idx_ftr[7]);
-        $("#lvcon").html(idx_ftr[8]);
-        $("#source").html(idx_ftr[9]);
+        $("#desc").html(idx_ftr[8]);
+        $("#lvcon").html(idx_ftr[9]);
+        $("#source").html(idx_ftr[10]);
         ftr_idx_num += 1;
         break;
     }
@@ -216,24 +225,24 @@ function NxtCon(frame, method, fornum) {
     switch (ftr_for_num) {
       case 0:
         $("#content-sg").html(frame);
-        let clt_con = idx_ftr.slice(0,4).join("/")
-          + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${inum})</span>`;
+        let clt_con = idx_ftr.slice(1,5).join("/")
+          + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[1]})</span>`;
         $("#cltype").html(clt_con);
-        $("#desc").html(idx_ftr[7]);
+        $("#desc").html(idx_ftr[8]);
         break;
 
       case 1:
-        $("#headstr").html(idx_ftr[6]);
+        $("#headstr").html(idx_ftr[7]);
         break;
 
       case 2:
-        $("#memorize").html(idx_ftr[5]);
+        $("#memorize").html(idx_ftr[6]);
         break;
 
       case 3:
-        $("#definy").html(idx_ftr[4]);
-        $("#lvcon").html(idx_ftr[8]);
-        $("#source").html(idx_ftr[9]);
+        $("#definy").html(idx_ftr[5]);
+        $("#lvcon").html(idx_ftr[9]);
+        $("#source").html(idx_ftr[10]);
         ftr_idx_num += 1;
         break;
     }
@@ -360,22 +369,24 @@ function ItvRepeat(method) {
         case 10:
           $("#content-sg").html(html_frame);
           $("#btnxt").html(buttons);
-          $("#cltype").html(idx_ftr.slice(0,4).join("/"));
-          $("#definy").html(idx_ftr[4]);
+          let clt_con = idx_ftr.slice(1,5).join("/")
+            + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
+          $("#cltype").html(clt_con);
+          $("#definy").html(idx_ftr[5]);
           break;
 
         case 11:
-          $("#memorize").html(idx_ftr[5]);
+          $("#memorize").html(idx_ftr[6]);
           break;
 
         case 12:
-          $("#headstr").html(idx_ftr[6]);
+          $("#headstr").html(idx_ftr[7]);
           break;
 
         case 13:
-          $("#desc").html(idx_ftr[7]);
-          $("#lvcon").html(idx_ftr[8]);
-          $("#source").html(idx_ftr[9]);
+          $("#desc").html(idx_ftr[8]);
+          $("#lvcon").html(idx_ftr[9]);
+          $("#source").html(idx_ftr[10]);
           break;
 
         case 14:
@@ -384,27 +395,29 @@ function ItvRepeat(method) {
         case 20:
           $("#content-sg").html(html_frame);
           $("#btnxt").html(buttons);
-          $("#cltype").html(idx_ftr.slice(0,4).join("/"));
-          $("#desc").html(idx_ftr[7]);
+          $("#cltype").html(idx_ftr.slice(1,5).join("/"));
+          $("#desc").html(idx_ftr[8]);
           break;
 
         case 21:
-          $("#headstr").html(idx_ftr[6]);
+          $("#headstr").html(idx_ftr[7]);
           break;
 
         case 22:
-          $("#memorize").html(idx_ftr[5]);
+          $("#memorize").html(idx_ftr[6]);
           break;
 
         case 23:
-          $("#definy").html(idx_ftr[4]);
-          $("#lvcon").html(idx_ftr[8]);
-          $("#source").html(idx_ftr[9]);
+          $("#definy").html(idx_ftr[5]);
+          $("#lvcon").html(idx_ftr[9]);
+          $("#source").html(idx_ftr[10]);
           break;
 
         case 24:
           break;
       }
+      document.body.querySelector("#srch-sg").scrollIntoView();
+
       if (ftr_for_num < timelimit.length - 1) { ftr_for_num++; } else { ftr_for_num = 0 ;}
 
       if (ftr_for_num == 0) {
@@ -416,7 +429,6 @@ function ItvRepeat(method) {
           alert("선택 파트 학습 종료");
         }
       }
-      document.body.querySelector("#srch-sg").scrollIntoView();
     }
   }
   else if (timenum > timelimit[ftr_for_num]) {
@@ -452,18 +464,19 @@ function SingleView() {
   let level_sg = $("#level-sg select").val();
   let rdo_sg = $('input[name=lvsgRdo]:checked').val();
 
+  ftr_objfn = [...ftr_objsv]
   // 보기 방식 변수 전역 변수로 보내기
   html_method = view_method_sg;
   // 중요도에 따른 필터링
   if (level_sg != "전체") {
     if (rdo_sg == "include") {
       ftr_objfn = ftr_objfn.filter((item, index, source)=>{
-        return (item[8] <= level_sg);
+        return (item[9] <= level_sg);
       });
     }
     else if (level_sg) {
       ftr_objfn = ftr_objfn.filter((item, index, source)=>{
-        return (item[8] == level_sg);
+        return (item[9] == level_sg);
       });
     }
   }
@@ -601,7 +614,7 @@ function SingleView() {
   if (sort_order == "역순으로"){
     ftr_idx.reverse();
   } else if (sort_order == "랜덤"){
-    ftr_idx.sort(() => { Math.random() - 0.5; });
+    ftr_idx.sort(() => { let result = Math.random() - 0.5; return result;});
   }
 
   /*
@@ -657,7 +670,7 @@ function PageLoad(page, method) {
       <nav>
         <ul class="pagination">
           <li ${pg_active}>
-            <a href="#" aria-label="Previous" ${onclk}>
+            <a href="#srch-wh" aria-label="Previous" ${onclk}>
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>`;
@@ -665,7 +678,7 @@ function PageLoad(page, method) {
   for (i = page_min; i <= page_max; i++){
     if (i-1 != page) { pg_active = ""; onclk=`onclick="NxtPage(${i-1},'${method}')"`;}
     else { pg_active = 'class="active"'; onclk="";}
-    html_page += `<li ${pg_active}><a href="#" ${onclk}>${i}</a></li>`;
+    html_page += `<li ${pg_active}><a href="#srch-wh" ${onclk}>${i}</a></li>`;
   }
 
   if (page_nxt != all_page) { pg_active = ""; onclk=`onclick="NxtPage(${page_nxt-1},'${method}')"`;}
@@ -673,7 +686,7 @@ function PageLoad(page, method) {
 
   html_page +=`
         <li ${pg_active}>
-          <a href="#" aria-label="Next" ${onclk}>
+          <a href="#srch-wh" aria-label="Next" ${onclk}>
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
@@ -687,12 +700,14 @@ function PageLoad(page, method) {
 
 // 다음 페이지 보기 함수 - 페이지 번호, 홀뷰 함수 관련 기능
 function NxtPage(page, method) {
+  //console.log("ftr_objfn,ftr_idx: ",ftr_objfn,ftr_idx)
   let lines = $("#lines").val();
-  all_page = Math.ceil(ftr_objfn.length / lines);
-  let min_line = Math.min(ftr_objfn.length, (page+1)*lines);
-  let obj_list = ftr_objfn.slice(page*lines, min_line);
+  all_page = Math.ceil(ftr_idx.length / lines);
+  let min_line = Math.min(ftr_idx.length, (page+1)*lines);
+  let sort_list = ftr_idx.slice(page*lines, min_line);
   let html_menu = ``;
   act_pg = page;
+
 
   if (method == "개념우선(서술형)"){
     html_menu += `
@@ -709,32 +724,35 @@ function NxtPage(page, method) {
   }
   else if (method == "설명우선(단답형)") {
     html_menu += `
-      <div class="col-lg-12 bdtb-lsg">
-        <div class="row">
-          <div id="desc-m" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 fs-16">설명</div>
-          <div id="headstr-m" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 fs-16">머릿글자</div>
-          <div id="memorize-m" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 fs-16">암기문</div>
-          <div id="definy-m" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 fs-16">개념</div>
-          <div id="lvcon-m" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 fs-13">중요/출처</div>
+      <div id="tb-menu" class="col-lg-12 bdt-1sg bdb-1sg pdtb-10">
+        <div class="row fw-bold text-center">
+          <div id="desc-m" class="col-lg-5 col-md-5 col-sm-5 hidden-xs fs-14">설명</div>
+          <div id="headstr-m" class="col-lg-2 col-md-2 col-sm-2 hidden-xs fs-14">머릿글자</div>
+          <div id="memorize-m" class="col-lg-3 col-md-3 col-sm-3 hidden-xs fs-14">암기문</div>
+          <div id="definy-m" class="col-lg-2 col-md-2 col-sm-2 hidden-xs fs-14">개념</div>
+          <div id="hd-menu2" class="col-xs-8 visible-xs fs-14">암기문&nbsp;/&nbsp;설명</div>
+          <div id="hd-menu1" class="col-xs-4 visible-xs fs-14">개념&nbsp;/&nbsp;머릿글자</div>
         </div>
       </div>`;
   }
   let html_content = html_menu;
 
-  for (let i = 0; i < obj_list.length; i++) {
-    let ix = ftr_objfn.indexOf(obj_list[i]);
+  for (let j = 0; j < sort_list.length; j++) {
+    let i = sort_list[j];
+    let obj_list = ftr_objfn;
+    let ix = obj_list[i][0];
     if (method == "개념우선(서술형)"){
       html_content += `
         <div class="col-lg-12 bdb-1sg pdtb-10">
           <div class="row">
-            <div id="definy-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${ix}.&nbsp;${obj_list[i][4]}</div>
-            <div id="memorize-${ix}" class="col-lg-3 col-md-3 col-sm-3 col-xs-8 fs-14">${obj_list[i][5]}</div>
+            <div id="definy-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${ix}.&nbsp;${obj_list[i][5]}</div>
+            <div id="memorize-${ix}" class="col-lg-3 col-md-3 col-sm-3 col-xs-8 fs-14">${obj_list[i][6]}</div>
             <div class="col-xs-12 visible-xs"><br><br></div>
-            <div id="headstr-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][6]}</div>
-            <div id="desc-${ix}" class="col-lg-5 col-md-5 col-sm-5 col-xs-8 fs-14">${obj_list[i][7]}</div>
+            <div id="headstr-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][7]}</div>
+            <div id="desc-${ix}" class="col-lg-5 col-md-5 col-sm-5 col-xs-8 fs-14">${obj_list[i][8]}</div>
             <div id="cltype-${ix}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pdt-10">
-              <span class="fs-12 fc-gr text-right">${obj_list[i].slice(0,4).join("/")}</span>
-              <span id="lvcon-${ix}" class="fs-12 fc-gr text-left">&nbsp;(중요도:&nbsp;${obj_list[i][8]}&nbsp;/&nbsp;출처:&nbsp;${obj_list[i][9]})</span>
+              <span class="fs-12 fc-gr text-right">${obj_list[i].slice(1,5).join("/")}</span>
+              <span id="lvcon-${ix}" class="fs-12 fc-gr text-left">&nbsp;(중요도:&nbsp;${obj_list[i][9]}&nbsp;/&nbsp;출처:&nbsp;${obj_list[i][10]})</span>
             </div>
           </div>
         </div>`;
@@ -743,14 +761,14 @@ function NxtPage(page, method) {
       html_content += `
         <div class="col-lg-12 bdb-1sg pdtb-10">
           <div class="row">
-            <div id="desc-${ix}" class="col-lg-5 col-md-5 col-sm-5 col-xs-8 fs-14">${ix}.&nbsp;${obj_list[i][7]}</div>
-            <div id="headstr-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][6]}</div>
+            <div id="desc-${ix}" class="col-lg-5 col-md-5 col-sm-5 col-xs-8 fs-14">${ix}.&nbsp;${obj_list[i][8]}</div>
+            <div id="headstr-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][7]}</div>
             <div class="col-xs-12 visible-xs"><br><br></div>
-            <div id="memorize-${ix}" class="col-lg-3 col-md-3 col-sm-3 col-xs-8 fs-14">${obj_list[i][5]}</div>
-            <div id="definy-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][4]}</div>
+            <div id="memorize-${ix}" class="col-lg-3 col-md-3 col-sm-3 col-xs-8 fs-14">${obj_list[i][6]}</div>
+            <div id="definy-${ix}" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 fs-14">${obj_list[i][5]}</div>
             <div id="cltype-${ix}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 pdt-10">
-              <span class="fs-12 fc-gr text-right">${obj_list[i].slice(0,4).join("/")}</span>
-              <span id="lvcon-${ix}" class="fs-12 fc-gr text-left">&nbsp;(중요도:&nbsp;${obj_list[i][8]}&nbsp;/&nbsp;출처:&nbsp;${obj_list[i][9]})</span>
+              <span class="fs-12 fc-gr text-right">${obj_list[i].slice(1,5).join("/")}</span>
+              <span id="lvcon-${ix}" class="fs-12 fc-gr text-left">&nbsp;(중요도:&nbsp;${obj_list[i][9]}&nbsp;/&nbsp;출처:&nbsp;${obj_list[i][10]})</span>
             </div>
           </div>
         </div>`;
@@ -768,25 +786,41 @@ function NxtPage(page, method) {
 
 // 홀뷰(전체 보기) 함수
 function WholeView() {
+  let sort_order_wh = $("#sort-order-wh select").val();
   let view_method_wh = $("#view-method-wh select").val();
   let level_wh = $("#level-wh select").val();
   let rdo_wh = $('input[name=lvwhRdo]:checked').val();
-  ftr_objfn = ftr_objsv;
+  ftr_objfn = [...ftr_objsv];
   html_method = view_method_wh;
 
   // 중요도에 따른 필터링
   if (level_wh != "전체") {
     if (rdo_wh == "include") {
       ftr_objfn = ftr_objfn.filter((item, index, source)=>{
-        return (item[8] <= level_wh);
+        return (item[9] <= level_wh);
       });
     }
     else {
       ftr_objfn = ftr_objfn.filter((item, index, source)=>{
-        return (item[8] == level_wh);
+        return (item[9] == level_wh);
       });
     }
   }
+  // 인덱스 초기화
+  ftr_idx = [];
+  // 인덱스 할당
+  for (let i = 0; i < ftr_objfn.length; i++) {
+    ftr_idx.push(i);
+  }
+
+  // 정렬 순서에 따라 인덱스 재배치
+  if (sort_order_wh == "역순으로"){
+    ftr_idx.reverse();
+  } else if (sort_order_wh == "랜덤"){
+    ftr_idx.sort(() => { let result = Math.random() - 0.5; return result;});
+  }
+
+
   $("#srch-sg").addClass("hidden");
   $("#content-sg").addClass("hidden");
   $("#srch-wh").removeClass("hidden");
