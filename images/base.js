@@ -175,7 +175,7 @@ function JmpBtn() {
 /* 다음 콘텐츠 보기 함수 -
 홀뷰(전체 보기) 함수, 싱글뷰(하나씩 보기) 함수 관련 기능 */
 function NxtCon(frame, method, fornum) {
-  let idx_ftr, inum;
+  let idx_ftr, inum, clt_con;
   if (ftr_idx_num >= ftr_idx.length) {
     console.log("Nxtcon ftr_idx_num 오류")
     idx_ftr = null;
@@ -199,7 +199,7 @@ function NxtCon(frame, method, fornum) {
     switch (ftr_for_num) {
       case 0:
         $("#content-sg").html(frame);
-        let clt_con = idx_ftr.slice(1,5).join("/")
+        clt_con = idx_ftr.slice(1,5).join("/")
           + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
         $("#cltype").html(clt_con);
         $("#definy").html(idx_ftr[5]);
@@ -225,7 +225,7 @@ function NxtCon(frame, method, fornum) {
     switch (ftr_for_num) {
       case 0:
         $("#content-sg").html(frame);
-        let clt_con = idx_ftr.slice(1,5).join("/")
+        clt_con = idx_ftr.slice(1,5).join("/")
           + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[1]})</span>`;
         $("#cltype").html(clt_con);
         $("#desc").html(idx_ftr[8]);
@@ -343,7 +343,7 @@ function CancelView(frame, method, time_arr) {
 // 인터벌 보기 함수(실제 자동보기 함수 기능) - 오토슬라이드에서 호출
 function ItvRepeat(method) {
   timenum++;
-
+  let clt_con
   if (timenum == timelimit[ftr_for_num]) {
     let casenum = 0;
     timenum = 0;
@@ -369,7 +369,7 @@ function ItvRepeat(method) {
         case 10:
           $("#content-sg").html(html_frame);
           $("#btnxt").html(buttons);
-          let clt_con = idx_ftr.slice(1,5).join("/")
+          clt_con = idx_ftr.slice(1,5).join("/")
             + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
           $("#cltype").html(clt_con);
           $("#definy").html(idx_ftr[5]);
@@ -395,7 +395,7 @@ function ItvRepeat(method) {
         case 20:
           $("#content-sg").html(html_frame);
           $("#btnxt").html(buttons);
-          let clt_con = idx_ftr.slice(1,5).join("/")
+          clt_con = idx_ftr.slice(1,5).join("/")
             + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
           $("#cltype").html(clt_con);
           $("#desc").html(idx_ftr[8]);
