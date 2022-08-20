@@ -254,7 +254,7 @@ function NxtCon(frame, method, fornum) {
       <div class="col-lg-12"><br><br></div>`;
 
     $("#btnxt").html(buttons);
-    document.body.querySelector("#srch-input").scrollIntoView();
+    document.body.querySelector("#srch-sg").scrollIntoView();
   }
 }
 
@@ -414,7 +414,7 @@ function ItvRepeat(method) {
           alert("선택 파트 학습 종료");
         }
       }
-      document.body.querySelector("#srch-input").scrollIntoView();
+      document.body.querySelector("#srch-sg").scrollIntoView();
     }
   }
   else if (timenum > timelimit[ftr_for_num]) {
@@ -466,28 +466,7 @@ function SingleView() {
     }
   }
 
-  let html_content;
-  html_content = `
-    <div class="row" id="srch-part">
-      <div class="col-lg-4 col-md-4 col-sm-2 col-xs-2"></div>
-      <div class="col-lg-4 col-md-4 col-sm-8 col-xs-8">
-        <div class="row">
-          <div class="col-lg-7 col-md-7 col-sm-8 col-xs-8">
-            <input id="srch-input" type="number" class="form-control text-center" placeholder="인덱스 번호 입력">
-          </div>
-          <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
-            <button onclick="JmpBtn()" class="btn btn-default">인덱스 검색</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-sm-2 col-xs-2"></div>
-
-    </div>
-    <div class="fs-14">
-      <br>
-      <br>
-    </div>
-  `;
+  let html_content = ``;
 
   if (view_method_sg == "개념우선(서술형)"){
     html_content +=`
@@ -699,7 +678,7 @@ function PageLoad(page, method) {
 
   $("#page-wh").html(html_page);
 
-  document.body.querySelector("#srch-page").scrollIntoView();
+  document.body.querySelector("#srch-wh").scrollIntoView();
 }
 
 // 다음 페이지 보기 함수 - 페이지 번호, 홀뷰 함수 관련 기능
@@ -708,29 +687,8 @@ function NxtPage(page, method) {
   all_page = Math.ceil(ftr_objfn.length / lines);
   let min_line = Math.min(ftr_objfn.length, (page+1)*lines);
   let obj_list = ftr_objfn.slice(page*lines, min_line);
-  let html_menu;
+  let html_menu = ``;
   act_pg = page;
-
-  html_menu = `
-    <div class="row">
-      <div class="col-lg-4 col-md-4 col-sm-2 col-xs-2"></div>
-      <div class="col-lg-4 col-md-4 col-sm-8 col-xs-8">
-        <div class="row">
-          <div class="col-lg-7 col-md-7 col-sm-8 col-xs-8">
-            <input id="srch-page" type="number" class="form-control text-center" placeholder="페이지 번호 입력">
-          </div>
-          <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4">
-            <button onclick="PageSrch()" class="btn btn-default">페이지 검색</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-4 col-sm-2 col-xs-2"></div>
-    </div>
-    <div class="fs-14">
-      <br>
-      <br>
-    </div>
-  `;
 
   if (method == "개념우선(서술형)"){
     html_menu += `
@@ -797,6 +755,7 @@ function NxtPage(page, method) {
   if (page < all_page) {
     $("#content-wh").html(html_content);
     PageLoad(page, method);
+    document.body.querySelector("#srch-wh").scrollIntoView();
   }
   else {
     alert('마지막 페이지입니다.')
