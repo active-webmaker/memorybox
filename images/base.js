@@ -395,7 +395,9 @@ function ItvRepeat(method) {
         case 20:
           $("#content-sg").html(html_frame);
           $("#btnxt").html(buttons);
-          $("#cltype").html(idx_ftr.slice(1,5).join("/"));
+          let clt_con = idx_ftr.slice(1,5).join("/")
+            + `&nbsp;<span class="fs-13 fc-gr">(인덱스: ${idx_ftr[0]})</span>`;
+          $("#cltype").html(clt_con);
           $("#desc").html(idx_ftr[8]);
           break;
 
