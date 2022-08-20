@@ -29,7 +29,7 @@ function Dload(){
 
     // 데이터 제목 내용 HTML 상에 반영 & 타이틀 이미지 변경
     $("#title-part span").html(ttl);
-    $("#title-part img").attr("src" ,`./images/light_150.png`);
+    $("#title-part img").attr("src" ,`.\\img\\light_150.png`);
 
     // HTML 상에 1차 필터 메뉴 반영하기
     let ftr_con1 = '<option></option>\n<option>전체</option>\n<option>'
@@ -41,9 +41,11 @@ function Dload(){
     $("#btn-ophide").removeClass("hidden");
 
     // HTML 상에 콘텐츠 파트 숨기기
-    $("#content-wh").addClass("hidden");
-    $("#content-sg").addClass("hidden");
     $("#page-wh").addClass("hidden");
+    $("#srch-wh").addClass("hidden");
+    $("#content-wh").addClass("hidden");
+    $("#srch-sg").addClass("hidden");
+    $("#content-sg").addClass("hidden");
 
     // HTML 상의 중요도 필터에 리스트 반영하기
     let lv_li = [];
@@ -579,7 +581,9 @@ function SingleView() {
   $("#btn-opshow").removeClass("hidden");
 
   $("#content-wh").addClass("hidden");
+  $("#srch-wh").addClass("hidden");
   $("#page-wh").addClass("hidden");
+  $("#srch-sg").removeClass("hidden");
   $("#content-sg").removeClass("hidden");
   $("#content-sg").html(html_content);
 
@@ -783,7 +787,9 @@ function WholeView() {
       });
     }
   }
+  $("#srch-sg").addClass("hidden");
   $("#content-sg").addClass("hidden");
+  $("#srch-wh").removeClass("hidden");
   $("#content-wh").removeClass("hidden");
   $("#page-wh").removeClass("hidden");
   NxtPage(0, view_method_wh);
