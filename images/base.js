@@ -6,19 +6,11 @@ function Dload(){
   let ond = false;
   file_data.onload = () => {
     let f_str = file_data.result.toString();
-    let f_split = f_str.split("\r\n");
+    let f_split = CsvSplit(f_str)
     // csv 파일 제목, 메뉴, 내용 분리
-    ttl = f_split[0].split(',')[0];
-    head_li = f_split[1].split(',');
+    ttl = f_split[0][0];
+    head_li = f_split[1]
     con_li = f_split.slice(2, f_split.length);
-    for (i = 0; i < con_li.length; i++){
-      if (!con_li[i]) {
-        con_li.splice(i, 1);
-      }
-      else {
-        con_li[i] = con_li[i].split(",");
-      }
-    }
 
     // 데이터 내용(콘텐츠) 1차 필터 목록에 할당
     ftr_obj1 = con_li;
