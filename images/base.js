@@ -18,11 +18,10 @@ function Dload(){
     for(con of con_li) {
       ftr_res1.add(con[1]);
     }
-    
+
     // 데이터 제목 내용 HTML 상에 반영 & 타이틀 이미지 변경
     $("#title-part span").html(ttl);
-    $("#org-img").addClass("hidden");
-    $("#chg-img").removeClass("hidden");
+    $("#title-part img").attr("src" ,`./images/light_150.png`);
 
     // HTML 상에 1차 필터 메뉴 반영하기
     let ftr_con1 = '<option></option>\n<option>전체</option>\n<option>'
@@ -269,19 +268,25 @@ function OperKey(e) {
   let whbool = $("#content-wh").hasClass("hidden");
 
   if (!sgbool) {
-    if ([37, 65, 81].includes(e.keyCode)) {
+    if ([119, 192].includes(e.keyCode)) {
+      SingleView();
+    }
+    else if ([37, 65, 81].includes(e.keyCode)) {
       JmpCon(-1);
     }
     else if ([39, 68, 87].includes(e.keyCode)) {
       JmpCon(1);
     }
-    else if ([192, 83].includes(e.keyCode)) {
+    else if ([83].includes(e.keyCode)) {
       NxtCon(html_frame, html_method, ftr_for_num);
     }
   }
 
   if (!whbool) {
     if (html_method && (act_pg >= 0) && (typeof(act_pg)=="number")) {
+      if ([119, 192].includes(e.keyCode)) {
+        WholeView();
+      }
       if ([37, 81, 65].includes(e.keyCode)) {
         if (act_pg - 1 < 0) {
           alert("첫페이지입니다.");
@@ -290,7 +295,7 @@ function OperKey(e) {
           NxtPage(act_pg-1, html_method);
         }
       }
-      else if ([39, 87, 83, 68, 192].includes(e.keyCode)) {
+      else if ([39, 87, 83, 68].includes(e.keyCode)) {
         NxtPage(act_pg+1, html_method);
       }
     }
